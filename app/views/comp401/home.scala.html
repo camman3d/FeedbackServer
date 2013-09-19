@@ -1,0 +1,19 @@
+@(onyen: String, projectSize: Int)
+
+@main("Comp 401") {
+
+    <div class="container">
+        <h1>COMP 401 Assignment Feedback</h1>
+
+        <p>Welcome: @onyen</p>
+        <p>Select an assignment to view the feedback.</p>
+
+        <ul>
+            @for(id <- 1 to projectSize) {
+                <li><a href="@routes.Comp401.viewFeedback(id)">Assignment @id</a></li>
+            }
+        </ul>
+
+    </div>
+
+}

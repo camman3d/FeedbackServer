@@ -1,0 +1,26 @@
+@(url: String)
+
+@main("Comp 401") {
+
+    <div class="container">
+        <h1>COMP 401 Assignment Feedback</h1>
+
+        <p>
+            Please log in to view your assignment feedback.
+        </p>
+
+        <form action="https://onyen.unc.edu/cgi-bin/unc_id/authenticator.pl">
+            <input type="hidden" name="cookie" value="comp401"/>
+            <input type="hidden" name="title" value="COMP 401 Login"/>
+            <input type="hidden" name="backgroundimage" value="https://onyen.unc.edu/unc_id/gfx/backgrounds/Texture0101.jpg"/>
+            <input type="hidden" name="csslink" value="http://help.unc.edu/css/_help_style.css"/>
+            <input type="hidden" name="backgroundcolor" value="#ffffff"/>
+            <input type="hidden" name="getpid" value="0"/>
+            <input type="hidden" name="targetpass" value="@url"/>
+            <input type="hidden" name="targetfail" value="@url"/>
+            <input class="btn btn-primary" type="submit" value="Authenticate"/>
+        </form>
+
+    </div>
+
+}
