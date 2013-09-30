@@ -58,10 +58,18 @@ object Comp401 extends Controller {
       onyen =>
         val feedback = FeedbackFinder.getFeedback(onyen, id)
         if (feedback.isDefined) {
-          if (feedback.get.isEmpty)
-            Ok("Sorry, there is no feedback for you on this assignment. Please talk to a TA.")
-          else
-            Ok(feedback.get)
+
+          // Check for just text
+          if (feedback.get.isLeft) {
+            val text = feedback.get.left.get
+            if (text.isEmpty)
+              Ok("Sorry, there is no feedback for you on this assignment. Please talk to a TA.")
+            else
+              Ok(text)
+          } else {
+            val feedbackResults = feedback.get.right.get
+            Ok(views.html.comp401.feedback(feedbackResults, id))
+          }
         } else
           Ok("Sorry, but there's no record of any grading done for you. Please talk to a TA.")
   }

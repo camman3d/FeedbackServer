@@ -1,0 +1,51 @@
+@(feedback: Feedback, assignmentId: Int)
+
+@main("Assignment " + assignmentId + " Feedback") {
+
+    <div class="container">
+        <h1>Feedback for @feedback.userId <small>Assignment @assignmentId</small></h1>
+
+        <h2>Grading Results</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Score</th>
+                <th>Possible</th>
+                <th>Extra Credit</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(result <- feedback.results) {
+                <tr>
+                    <td>@result.feature</td>
+                    <td>@result.score</td>
+                    <td>@result.possible</td>
+                    <td>@if(result.extraCredit){ Yes }</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <p style="text-align: center">
+            <strong>Total Score: @feedback.results.map(_.score).sum</strong>
+        </p>
+
+        <h2>Grading Notes</h2>
+        @for(result <- feedback.results) {
+            @if(!result.notes.isEmpty) {
+                <h2><small>Notes for "@result.feature"</small></h2>
+                <p>@result.notes</p>
+            }
+        }
+
+        <h2>TA Comments</h2>
+        @if(feedback.comments.isEmpty) {
+            <em>No comments</em>
+        } else {
+            <p>@feedback.comments</p>
+        }
+
+        <div style="margin-top: 30px;"></div>
+    </div>
+
+}

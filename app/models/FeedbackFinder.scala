@@ -19,7 +19,7 @@ object FeedbackFinder {
     if (projectCount.isEmpty) {
       // Cache has expired. Count again
       val dataFolder = new File("data")
-      val count = dataFolder.listFiles().size
+      val count = dataFolder.listFiles().count(_.getName.startsWith("Assignment"))
 
       // Save the count and expire it in 10 mins
       Cache.set("projectCount", count, 600)
@@ -28,9 +28,14 @@ object FeedbackFinder {
       projectCount.get
   }
 
-  def getFeedback(onyen: String, project: Int): Option[String] = {
+  def getFeedback(onyen: String, project: Int): Option[Either[String, Feedback]] = {
     val projectFiles = new File("data/Assignment" + project).listFiles()
-    projectFiles.find(_.getName.contains("(" + onyen + ")"))
-      .map(file => FileUtils.readFileToString(file))
+    projectFiles.find(_.getName.contains("(" + onyen + ")")).map(file => {
+      val contents = FileUtils.readFileToString(file)
+      if (file.getName.endsWith(".json"))
+        Right(Feedback.fromJson(contents))
+      else
+        Left(contents)
+    })
   }
 }
