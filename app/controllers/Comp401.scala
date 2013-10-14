@@ -67,8 +67,11 @@ object Comp401 extends Controller {
             else
               Ok(text)
           } else {
-            val feedbackResults = feedback.get.right.get
-            Ok(views.html.comp401.feedback(feedbackResults, id))
+            val json = feedback.get.right.get
+            if (json.isLeft)
+              Ok(views.html.comp401.feedback(json.left.get, id))
+            else
+              Ok(views.html.comp401.feedback2(json.right.get, id))
           }
         } else
           Ok("Sorry, but there's no record of any grading done for you. Please talk to a TA.")

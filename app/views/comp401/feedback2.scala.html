@@ -1,0 +1,103 @@
+@(feedback: Feedback2, assignmentId: Int)
+
+@main("Assignment " + assignmentId + " Feedback") {
+
+    <div class="container">
+        <h1>Feedback for @feedback.userId <small>Assignment @assignmentId</small></h1>
+
+        <h2>Feature Results</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Score</th>
+                <th>Possible</th>
+                <th>Extra Credit</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(result <- feedback.featureResults) {
+                <tr>
+                    <td>@result.feature</td>
+                    <td>@result.score</td>
+                    <td>@result.possible</td>
+                    <td>@if(result.extraCredit){ Yes }</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <p style="text-align: center">
+            <strong>Points Awarded: @feedback.featureResults.map(_.score).sum</strong>
+        </p>
+
+        <h2>Restriction Results</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Restriction</th>
+                <th>Score</th>
+                <th>Max Penalty</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for(result <- feedback.restrictionResults) {
+                <tr>
+                    <td>@result.feature</td>
+                    <td>@result.score</td>
+                    <td>@result.possible</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <p style="text-align: center">
+            <strong>Points Deducted: @feedback.restrictionResults.map(_.score).sum</strong>
+        </p>
+        <p style="text-align: center">
+            <strong>Total Score: @{feedback.featureResults.map(_.score).sum + feedback.restrictionResults.map(_.score).sum}</strong>
+        </p>
+
+        <h2>Feature Notes</h2>
+        @for(result <- feedback.featureResults) {
+            @if(!result.notes.isEmpty || result.results.find(!_.notes.isEmpty).isDefined ) {
+                <h2><small>Notes for "@result.feature"</small></h2>
+                @for(tcResult <- result.results.filter(!_.notes.isEmpty)) {
+                    <p>
+                        <strong>From <em>@tcResult.name</em>: </strong>
+                        @tcResult.notes
+                    </p>
+                }
+
+                @if(!result.notes.isEmpty) {
+                    <p>@result.notes</p>
+                }
+            }
+        }
+
+        <h2>Restriction Notes</h2>
+        @for(result <- feedback.restrictionResults) {
+            @if(!result.notes.isEmpty || result.results.find(!_.notes.isEmpty).isDefined ) {
+                <h2><small>Notes for "@result.feature"</small></h2>
+                @for(tcResult <- result.results.filter(!_.notes.isEmpty)) {
+                    <p>
+                        <strong>From <em>@tcResult.name</em>: </strong>
+                        @tcResult.notes
+                    </p>
+                }
+
+                @if(!result.notes.isEmpty) {
+                    <p>@result.notes</p>
+                }
+            }
+        }
+
+        <h2>TA Comments</h2>
+        @if(feedback.comments.isEmpty) {
+            <em>No comments</em>
+        } else {
+            <p>@feedback.comments</p>
+        }
+
+        <div style="margin-top: 30px;"></div>
+    </div>
+
+}

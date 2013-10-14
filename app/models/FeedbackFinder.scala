@@ -4,6 +4,7 @@ import play.api.cache.Cache
 import play.api.Play.current
 import java.io.File
 import org.apache.commons.io.FileUtils
+import play.api.libs.json.{JsUndefined, Json}
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,13 +29,17 @@ object FeedbackFinder {
       projectCount.get
   }
 
-  def getFeedback(onyen: String, project: Int): Option[Either[String, Feedback]] = {
+  def getFeedback(onyen: String, project: Int): Option[Either[String, Either[Feedback, Feedback2]]] = {
     val projectFiles = new File("data/Assignment" + project).listFiles()
     projectFiles.find(_.getName.contains("(" + onyen + ")")).map(file => {
       val contents = FileUtils.readFileToString(file)
-      if (file.getName.endsWith(".json"))
-        Right(Feedback.fromJson(contents))
-      else
+      if (file.getName.endsWith(".json")) {
+        val json = Json.parse(contents)
+        if ((json \ "featureResults").isInstanceOf[JsUndefined])
+          Right(Left(Feedback.fromJson(contents)))
+        else
+          Right(Right(Feedback2.fromJson(contents)))
+      } else
         Left(contents)
     })
   }
